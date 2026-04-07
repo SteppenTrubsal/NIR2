@@ -1,0 +1,130 @@
+% стилевой файл для оформления ВКР по требованиям ИАТЭ
+\ProvidesFile{vkriate}
+% В разработке и тестировании шаблонов отчетов по НИР и ВКР с 2008 по 2021 годы принимали участие студенты ИАТЭ:
+% Вероника Мальцева, Ольга Юркова,
+% Александр Стариков, Игорь Бобков, Ангелина Шорошева
+% Максим Федоренко
+% Алёна Дукина
+% Александр Радаев, Павел Бармёнков, Ирина Загородняя
+% Анастасия Горбачева, Анна Масленникова
+% Валентина Петренко
+% Владимир Петченко
+
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{Tempora}
+\setmonofont{CMU Typewriter Text}[Scale=MatchLowercase]
+
+\usepackage[backend=biber,sorting=none,style=gost-numeric,autolang=other]{biblatex} % библиография
+\usepackage{csquotes}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{fancyvrb}
+\usepackage{nformular}
+\usepackage{setspace} % управление междустрочными интервалами
+%поля документа
+\usepackage[left=3cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage[nooneline,labelsep=endash]{caption} 
+\captionsetup[table]{justification=raggedright} % заголовок таблицы выравнивается влево
+\captionsetup[figure]{justification=centering,labelsep=endash} % заголовок рисунка - по центру
+
+% отступ перед первым абзацем
+\usepackage{indentfirst}
+%вставка изображений
+\usepackage{graphicx}
+% счетчики
+\usepackage{totcount}
+% управление содержанием
+\usepackage{tocloft}
+% управление таблицами и рисунками
+\usepackage{float}
+
+%\usepackage[md]{titlesec} % заголовки обычным шрифтом
+\usepackage{titlesec}
+
+\usepackage[title,titletoc]{appendix}
+
+\newcounter{mycitecount}                                %% Счётчик библиографии
+\AtEveryBibitem{\stepcounter{mycitecount}}              %% Работает для biblatex
+
+\usepackage[figure, table, mycitecount, xspace ]{totalcount}           %% Подсчёт общего количества объектов в документе
+
+\usepackage{capt-of} 
+\usepackage{needspace}
+% окружение для листингов - с нумерацией строк слева
+\DefineVerbatimEnvironment{MyCode}{Verbatim}
+  { frame=lines
+  , numbers=left
+  , numberblanklines=false
+  , framesep=5mm
+  }
+
+% уменьшенный шрифт
+\DefineVerbatimEnvironment{MyCodes}{Verbatim}
+  { frame=lines
+  , numbers=left
+  , numberblanklines=false
+  , framesep=5mm
+  , fontsize=\small
+  }
+
+% автоматическая нумерация листингов
+\newfloat{Program}{phb}{lop}
+\floatname{Program}{Листинг}
+\floatstyle{ruled}
+
+%\captionsetup[Program]{justification=centering} % подпись к листингу - по центру
+\captionsetup[Program]{justification=raggedright} % подпись к листингу - слева, команду \caption следует размещать вверху
+
+% Окружение для листингов
+% использование:
+% \begin{MyList}{Название листинга}{Метка листинга для ссылки в тексте, напр., lst:10}
+% \begin{MyCode}
+% код вставляется сюда
+%\end{MyCode}
+% \end{MyList}
+\newenvironment{MyList}[2]
+  {\begin{flushleft}\needspace{3\baselineskip}\captionof{Program}{#1}\label{#2}}
+  {\end{flushleft}}
+
+\setlength{\parindent}{1.25cm} % абзацный отступ в соответствии с ГОСТ
+
+\setcounter{secnumdepth}{3} % глубина нумерации до подразделов
+
+%если нужны точки в оглавлении для разделов - раскомментируйте следующую команду
+%\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\addto\captionsrussian{%
+\renewcommand{\figurename}{Рисунок}%
+\renewcommand{\tablename}{Таблица}%
+}
+
+% В соответствии с требованием: для списков использовать дефис
+\setlength\leftmargini{4em}
+\renewcommand{\labelitemi}{--}
+
+\titlespacing{\section}{\parindent}{12pt}{12pt}
+\titlespacing{\subsection}{\parindent}{12pt}{12pt}
+\titlespacing{\subsubsection}{\parindent}{12pt}{12pt}
+
+%\renewcommand{\cftsecfont}{\rmfamily}  % Разделы в Содержании обычным текстом (не полужирным)
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{unicode=true}
+\usepackage{bookmark}
+
+\newcommand{\tocsection}[1]{%
+  \clearpage
+  \phantomsection
+  \section*{\centering #1}%
+  \addcontentsline{toc}{section}{#1}%
+}
+
+\usepackage{xcolor}
+\newenvironment{note}
+  {\par\begingroup\color{gray}\itshape\small}
+  {\par\endgroup}
+
+\usepackage{csquotes}
+\sloppy

@@ -1,0 +1,181 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{vkriate}
+
+\setFRMdfontsize{10}
+
+% задает длину поля для подписи на титульной странице
+\newFRMfield{xtitlesign}{32mm}
+
+% поле для факультета или кафедры
+\newFRMfield{fcath}{65mm}
+
+%имя файла с библиографией в формате BibTex
+\addbibresource{rbiblio.bib}
+
+\begin{document}
+
+% счетчики страниц, рисунков, таблиц
+\regtotcounter{page}
+\regtotcounter{figure}
+\regtotcounter{table}
+
+\renewcommand{\refname}{\centerline{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}} 
+\renewcommand{\contentsname}{\centerline{СОДЕРЖАНИЕ}} 
+
+\thispagestyle{empty}
+
+\begin{center}\small
+\textbf{МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ}\\
+ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ АВТОНОМНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ
+ВЫСШЕГО  ОБРАЗОВАНИЯ\\
+«Национальный исследовательский ядерный университет «МИФИ»\\
+\textbf{Обнинский институт атомной энергетики} – \\
+филиал федерального государственного автономного образовательного учреждения высшего\\
+образования «Национальный исследовательский ядерный университет «МИФИ»\\
+(ИАТЭ НИЯУ МИФИ)
+\end{center}
+
+\medskip
+
+\begin{center}
+\begin{tabular}{rl}
+Отделение &
+\useFRMfield{fcath}[\large Интеллектуальные кибернетические системы] \\
+Направление подготовки &
+\useFRMfield{fcath}[\large Информатика и вычислительная техника] \\
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}\large
+Научно-исследовательская работа
+
+\medskip
+
+\textbf{\Large
+Название
+}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular*}{\textwidth}{lcr}
+Студент группы ИВТ-Б22 &
+\useFRMfield{xtitlesign} &
+Карасев Н. А. \\
+& & \\
+Руководитель & & \\
+инженер-программист &
+\useFRMfield{xtitlesign} &
+Жильцов Д. И.
+\end{tabular*}
+\end{center}
+
+\vfill
+\large
+
+\begin{center}
+Обнинск, 2026 г
+\end{center}
+
+\onehalfspacing
+\pagebreak
+
+
+
+\section*{\centering РЕФЕРАТ}
+
+Работа \total{page} стр., \total{table} табл.,
+\total{figure} рис., \totalmycitecounts\ ист.
+
+Ключевые слова: CAN, CANOPEN, RUST, ПРОМЫШЛЕННАЯ АВТОМАТИЗАЦИЯ.
+
+\pagebreak
+
+
+\tableofcontents
+\pagebreak
+
+% Допускается определения, обозначения и сокращения приводить в одном структурном элементе «ОПРЕДЕЛЕНИЯ, ОБОЗНАЧЕНИЯ И СОКРАЩЕНИЯ».
+
+% \section*{\centering ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ}
+% В настоящем отчете о НИР применяют следующие термины с соответствующими определениями:
+% \begin{description}
+%   \item[Controller Area Network (CAN) ---] шина обмена сообщениями.
+%   \item[CANopen ---] протокол связи на основе CAN-шины. 
+% \end{description}
+
+% \pagebreak
+
+% \section*{\centering ПЕРЕЧЕНЬ СОКРАЩЕНИЙ И ОБОЗНАЧЕНИЙ}
+% В настоящем отчете о НИР применяют следующие сокращения и обозначения:
+
+% CAN --- Controller Area Network
+
+% OD --- Object Dictionary
+
+% EDS --- Electronic Data Sheet
+
+% \pagebreak
+
+
+
+% \tocsection{ВВЕДЕНИЕ}
+
+% \pagebreak
+
+
+
+% \section{Методология исследования}
+
+% \pagebreak
+
+
+
+% \tocsection{ЗАКЛЮЧЕНИЕ}
+
+% \pagebreak
+
+\addcontentsline{toc}{section}{СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ}
+\printbibliography
+
+%\renewcommand{\appendixpagename}{\centering Приложения}
+
+%\begin{appendices}
+
+%\renewcommand{\thesection}{\Asbuk{section}}
+
+%\makeatletter
+%\renewcommand{\theProgram}{\thesection.\@arabic\c@Program}
+%\makeatother
+
+%\section{\centering}
+%\setcounter{Program}{0}
+
+%\begin{flushleft}
+%\needspace{3\baselineskip}
+%\captionof{Program}{Часть кода реализации класса HashMapValue}\label{app1}
+%\begin{MyCodes}
+%public class HashMapValue {
+%    protected String filename;
+%    protected HashMap<String, String> hashValue = new HashMap<>();
+%    protected HashMap<String, Boolean> hashKeysFlag = new HashMap<>();
+%}
+%\end{MyCodes}
+%\end{flushleft}
+
+%\pagebreak
+
+%\begin{flushleft}
+%\captionof{Program}{Пример кода}\label{app2}
+%\begin{MyCodes}
+%код второго приложения
+%\end{MyCodes}
+%\end{flushleft}
+
+%\end{appendices}
+
+\end{document}

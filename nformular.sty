@@ -1,0 +1,154 @@
+% -------------------------------------------------
+% formular.sty (MINI replacement for XeLaTeX)
+% Implements only \newFRMfield / \useFRMfield
+% Keeps the visual layout of original formular fields:
+% content above, underline rule, optional description below,
+% minimal width with growth.
+% -------------------------------------------------
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{nformular}[2025/12/24 Mini replacement for XeLaTeX]
+
+\RequirePackage{xparse}
+\RequirePackage{xspace}
+
+% ---- internal error helper
+\newcommand{\FRM@err}[1]{\PackageError{nformular}{#1}{}}
+
+% ---- style parameters
+\newlength\frm@rulesep
+\newlength\frm@baselineskip
+\newlength\frm@margin
+\newlength\frm@rulewidth
+
+\setlength\frm@rulesep{2pt}         % distance between baseline and rule
+\setlength\frm@baselineskip{18pt}   % used for fontsize line spacing
+\setlength\frm@margin{5pt}          % horizontal padding around content
+\setlength\frm@rulewidth{0.1pt}     % thickness of underline rule
+
+\newif\iffrm@ruledstyle
+\frm@ruledstylefalse                % plain underline by default
+
+% ---- font size selectors: we keep them but do NOT use \usefont (XeLaTeX-friendly)
+% Original formular selects fonts via \usefont
+% Here we only apply \fontsize + \selectfont, and otherwise inherit current font (fontspec).
+\def\frm@fontsize{\f@size}   % numeric is OK for \fontsize (defaults to pt)
+\def\frm@dfontsize{6}
+
+\newcommand{\FRM@selectfont}{
+  \fontsize{\frm@fontsize}{\the\frm@baselineskip}\selectfont
+}
+\newcommand{\FRM@selectdfont}{
+  \fontsize{\frm@dfontsize}{\the\frm@baselineskip}\selectfont
+}
+
+% ---- user-level setters (compatibility subset)
+\NewDocumentCommand{\setFRMrulesep}{m}{\setlength\frm@rulesep{#1}}
+\NewDocumentCommand{\setFRMrulewidth}{m}{\setlength\frm@rulewidth{#1}}
+\NewDocumentCommand{\setFRMbaselineskip}{m}{\setlength\frm@baselineskip{#1}}
+\NewDocumentCommand{\setFRMmargin}{m}{\setlength\frm@margin{#1}}
+\NewDocumentCommand{\setFRMfontsize}{m}{\def\frm@fontsize{#1}}
+\NewDocumentCommand{\setFRMdfontsize}{m}{\def\frm@dfontsize{#1}}
+\NewDocumentCommand{\setFRMplainstyle}{}{\frm@ruledstylefalse}
+\NewDocumentCommand{\setFRMruledstyle}{}{\frm@ruledstyletrue}
+
+% Compatibility no-ops: keep your old template lines harmless under XeLaTeX
+\NewDocumentCommand{\setFRMfontencoding}{m}{}   % ignored in XeLaTeX
+\NewDocumentCommand{\setFRMdfontencoding}{m}{}  % ignored in XeLaTeX
+\NewDocumentCommand{\setFRMfontfamily}{m}{}     % ignored (use fontspec)
+\NewDocumentCommand{\setFRMdfontfamily}{m}{}    % ignored (use fontspec)
+\NewDocumentCommand{\setFRMfontseries}{m}{}     % ignored
+\NewDocumentCommand{\setFRMdfontseries}{m}{}    % ignored
+\NewDocumentCommand{\setFRMfontshape}{m}{}      % ignored
+\NewDocumentCommand{\setFRMdfontshape}{m}{}     % ignored
+
+% ---- storage per field:
+% frm@<id>@width : minimal width (dimension)
+% frm@<id>@desc  : description
+% frm@<id>@def   : default content
+\NewDocumentCommand{\newFRMfield}{m m O{} O{}}{
+  \@ifundefined{frm@#1@width}{%
+    \expandafter\gdef\csname frm@#1@width\endcsname{#2}%
+    \expandafter\gdef\csname frm@#1@desc\endcsname{#3}%
+    \expandafter\gdef\csname frm@#1@def\endcsname{#4}%
+    \expandafter\gdef\csname set#1\endcsname##1{%
+      \expandafter\gdef\csname frm@#1@def\endcsname{##1}%
+    }%
+  }{%
+    \FRM@err{FRMfield `#1' already declared}%
+  }%
+}
+
+\NewDocumentCommand{\renewFRMfield}{m m O{} O{}}{%
+  \@ifundefined{frm@#1@width}{%
+    \FRM@err{FRMfield `#1' is not declared}%
+  }{%
+    \expandafter\gdef\csname frm@#1@width\endcsname{#2}%
+    \expandafter\gdef\csname frm@#1@desc\endcsname{#3}%
+    \expandafter\gdef\csname frm@#1@def\endcsname{#4}%
+  }%
+}
+
+% ---- typesetting
+\newbox\frm@contbx
+\newbox\frm@namebx
+\newdimen\frm@wd
+
+\NewDocumentCommand{\useFRMfield}{m o}{%
+  \@ifundefined{frm@#1@width}{%
+    \FRM@err{FRMfield `#1' is not declared}%
+  }{%
+    \begingroup
+      % content to print
+      \def\FRM@content{%
+        \IfNoValueTF{#2}{\csname frm@#1@def\endcsname}{#2}%
+      }%
+      % description
+      \def\FRM@desc{\csname frm@#1@desc\endcsname}%
+
+      % content box: include horizontal padding like original formular
+      \setbox\frm@contbx=\hbox{%
+        \FRM@selectfont
+        \kern\frm@margin \FRM@content \kern\frm@margin
+      }%
+      \dp\frm@contbx=0pt\relax
+
+      % description box (may be empty)
+      \setbox\frm@namebx=\hbox{%
+        \FRM@selectdfont \FRM@desc
+      }%
+
+      % determine final width = max(minwidth, content, description)
+      \frm@wd=\csname frm@#1@width\endcsname\relax
+      \ifdim\wd\frm@contbx>\frm@wd \frm@wd=\wd\frm@contbx\fi
+      \ifdim\wd\frm@namebx>\frm@wd \frm@wd=\wd\frm@namebx\fi
+
+      \leavevmode
+      % vtop with an alignment close to original formular approach :contentReference[oaicite:2]{index=2}
+      \vtop{%
+        \offinterlineskip
+        \halign{\hfil##\hfil\cr
+          % content row
+          \hbox to\frm@wd{\hfil\box\frm@contbx\hfil}\cr
+          \noalign{%
+            \kern\frm@rulesep
+            \iffrm@ruledstyle
+              % Minimal ruled imitation (not needed for your current tex)
+              \hrule height\frm@rulewidth \kern1.5pt
+              \hrule height\frm@rulewidth \kern1.5pt
+              \hrule height\frm@rulewidth \kern1.5pt
+            \else
+              \hrule height\frm@rulewidth\relax
+            \fi
+            \kern2pt
+          }%
+          % description row
+          \hbox to\frm@wd{\hfil\box\frm@namebx\hfil}\cr
+          % ensure minimal width even if boxes are empty
+          \vrule width\frm@wd height0pt\cr
+        }%
+      }%
+    \endgroup
+    \IfNoValueTF{#2}{\xspace}{}%
+  }%
+}
